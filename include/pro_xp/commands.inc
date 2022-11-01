@@ -216,7 +216,7 @@ bool get_stat_flags(int client, int args, bool &kill_types, bool &verbose) {
 
 
 void stat_help(int client, const char[] cmd) {
-    ReplyToCommand(client, "%s: [--all|--verbose|--extended|kills]", cmd);
+    ReplyToCommand(client, "%s: [--all|--verbose|--extended|--kills]", cmd);
     ReplyToCommand(client, "\x07ffffff  --extended / --kills\x01 shows extended kill stats");
     ReplyToCommand(client, "\x07ffffff  --verbose\x01 shows deaths, xp, and damage");
 }

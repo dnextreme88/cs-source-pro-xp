@@ -1,16 +1,26 @@
 # Pro XP
 
-A flexible stats tracker and xp-based level system.  It was designed to be a slimmer replacement for something like `rankme` while also adding xp.  A set of natives are provided for querying level/xp information.
+A flexible stats tracker and xp-based level system.  
 
-In addition to XP it also tracks kills, deaths, damage dealt, knife kills, noscopes (if ProZoom is running), jumpshots, grenade kills, KD ratio, accuracy, and headshots.  Stats are tracked both per-session (from join to disconnect) and overall.
+## Overview
+
+ProXP was designed to be a slimmer replacement for something like `rankme` while also adding xp.  In addition to XP it also tracks kills, deaths, damage dealt, knife kills, noscopes (if [ProZoom](https://github.com/vishusandy/ProZoom) is running), jumpshots, grenade kills, KD ratio, accuracy, and headshots.  Stats are tracked both per-session (from join to disconnect) and overall.
 
 This plugin will use clan tags to display the user's level.  For players reaching the level cap (defaults to 100), special tags can be displayed.
 
-If Pro Zoom is running noscopes will give extra xp and track noscopes.
+## Features
 
-If Pro Sprint is running it will give bonus stamina depending on your level.
+- Per-session and overall stats tracking
 
-Also for users of Little Anticheat, XP can be deducted if the user is caught cheating.  Amounts can be configured in the `include/pro_xp/config.inc` file.
+- Level rankings
+
+- If [ProZoom](https://github.com/vishusandy/ProZoom) is installed noscopes will give extra xp and track noscopes.
+
+- If [ProSprint](https://github.com/vishusandy/ProSprint) is installed it will give bonus stamina depending on your level.
+
+- A set of natives are provided for querying level/xp information from other plugins.
+
+- Also for users of [Little Anti-Cheat](https://github.com/J-Tanzanite/Little-Anti-Cheat), XP is deducted if the user is caught cheating.  Amounts can be configured in the `include/pro_xp/config.inc` file and requires recompiling.
 
 ## Commands
 
@@ -20,13 +30,14 @@ Also for users of Little Anticheat, XP can be deducted if the user is caught che
 
 - `!myrank` or `!rank`: shows where you are ranked overall based on XP
 
-- `!xphelp`
+- `!xphelp`: show xp related commands
 
 - Stats
   
   - `!stats` or `!statistics`: by default shows KD, accuracy, and kills for both current session and overall
+    - Syntax: `!stats [--all|--verbose|--extended|--kills]`
   - `!stats help`: shows options for displaying statistics
-  - `!stats --all`: shows more detailed statistics
+  - `!stats --all`: shows all statistics
   - `!morestats`: same as `!stats --all`
   - `!session`: displays stats for the current session (uses same options described in `!stats help`)
   - `!overall`: displays overall stats (uses same options described in `!stats help`)
@@ -38,7 +49,7 @@ Also for users of Little Anticheat, XP can be deducted if the user is caught che
 
 ## Configuration
 
-There are some configuration options hardcoded into the `include/pro_xp/config.inc` file.  To modify them, edit the config file and recompile.
+There are some configuration options hard-coded into the `include/pro_xp/config.inc` file.  To modify them, edit the config file and recompile.
 
 Sounds are off by default but can be enabled by modifying the config file with `SOUNDS_ENABLED` set to `true` and changing the `sound_level_up` and `sound_level_up_high` variables to point to sound files in the `cstrike/sound` folder.
 
