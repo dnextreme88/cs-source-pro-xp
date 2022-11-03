@@ -6,6 +6,7 @@
 
 
 float xp_multiplier = 1.0;
+float stamina_award;
 float bot_mult[] = {BOT_MULT_EASY, BOT_MULT_NORMAL, BOT_MULT_HARD, BOT_MULT_EXPERT}; // 0=easy, 1=normal, 2=hard, 3=expert
 char guns[][] = {"usp", "glock", "deagle", "p228", "elite", "fiveseven", "m4a1", "ak47", "awp", "scout", "sg552", "galil", "famas", "sg550", "aug", "m249", "g3sg1", "ump45", "mp5navy", "m3", "xm1014", "tmp", "mac10", "p90"};
 #define	HITGROUP_HEAD   1

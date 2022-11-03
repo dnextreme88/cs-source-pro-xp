@@ -15,6 +15,7 @@
 #include <ProSprint.inc>
 #define REQUIRE_PLUGIN
 
+
 public Plugin myinfo = { name = "Pro XP", author = "Vishus", description = "Stats and XP level system", version = "0.2.0", url = "" };
 
 public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max) {
@@ -31,9 +32,15 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
     return APLRes_Success;
 }
 
-
 public void OnPluginStart() {
     SetLogFile();
+    if(STAMINA_AWARD_INTERVAL == 0) {
+        // avoids division by zero
+        stamina_award = 0.0;
+    } else {
+        // store the reciprocal of STAMINA_AWARD_INTERVAL so we can use multiplication instead of division (slightly faster, and no reason not to)
+        stamina_award = 1.0 / STAMINA_AWARD_INTERVAL;
+    }
     
     Database.Connect(DbConnCallback, "pro_xp");
     
@@ -579,7 +586,7 @@ NumberFormat( iNumber, String: sNumber[ ], iSize ) {
 
 
 float CalculateStamina(int lvl) {
-    return float(RoundToFloor(float(lvl) / 5.0)) + DEFAULT_STAMINA;
+    return float(RoundToFloor(float(lvl) * stamina_award)) + DEFAULT_STAMINA;
 }
 
 void SetStamina(int client, bool output=true) {

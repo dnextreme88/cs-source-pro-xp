@@ -1,6 +1,8 @@
 # Pro XP
 
-A flexible stats tracker and xp-based level system.  
+A flexible stats tracker and xp-based level system for Counter-Strike Source.
+
+Only works for CSS at the moment but shouldn't be hard to make compatible with CSGO (if you are willing to help with this let me know).
 
 ## Overview
 
@@ -80,85 +82,37 @@ The amount of XP gained is found by applying multipliers to the amount of damage
 
 Installation is fairly simple: 
 
-- modify your `databases.cfg` file
-- then copy the .smx file to the plugins folder (e.g. `cstrike/addons/sourcemod/plugins`) and load the file using `sm plugins load`.
+1. modify your `databases.cfg` file
+   
+   ```
+     "pro_xp"
+       {
+           "driver"      "default"
+           "host"        "<hostname>"
+           "database"    "<database>"
+           "user"        "<username>"
+           "pass"        "<password>"
+       }
+   ```
 
-The table should be created automatically (only tested with MySQL, but should work with Postgres and SQLite).  If you have problems create the table manually instead of allowing the plugin the create the table.
+2. then copy the .smx file to the plugins folder (e.g. `cstrike/addons/sourcemod/plugins`)
 
-Add the following to your `cstrike/addons/sourcemod/configs/databases.cfg`, substituting your database information and credentials:
+3. load the plugin (e.g. `sm plugins load filename.smx`)
 
-```
-  "pro_xp"
-    {
-        "driver"            "default"
-        "host"                "<hostname>"
-        "database"        "<database>"
-        "user"                "<username>"
-        "pass"                "<password>"
-    }
-```
-
-The database table will be created on first run, or you can manually create it.  Code for MySQL:
-
-```
-CREATE TABLE `pro_xp` (
-  `id` int(11) NOT NULL,
-  `steamid` varchar(32) DEFAULT NULL,
-  `name` varchar(64) DEFAULT NULL,
-  `xp` int(11) NOT NULL DEFAULT '0',
-  `sxp` int(11) DEFAULT '0',
-  `steam3` varchar(32) DEFAULT NULL,
-  `deaths` int(11) NOT NULL DEFAULT '0',
-  `kills` int(11) NOT NULL DEFAULT '0',
-  `hits` int(11) NOT NULL DEFAULT '0',
-  `shots` int(11) NOT NULL DEFAULT '0',
-  `jumpshots` int(11) NOT NULL DEFAULT '0',
-  `noscopes` int(11) NOT NULL DEFAULT '0',
-  `knife_kills` int(11) NOT NULL DEFAULT '0',
-  `headshots` int(11) NOT NULL DEFAULT '0',
-  `damage` bigint(11) NOT NULL DEFAULT '0',
-  `grenade_kills` int(11) NOT NULL DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
-ALTER TABLE `pro_xp`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `steamid_unique` (`steamid`);
-
-ALTER TABLE `pro_xp`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1
-```
-
-Automatically creating the tables has only been tested with MySQL, but should work for Postgres as well.
-I do not know if automatic table creation will work with SQLite, but you can try it.
+The table should be created automatically on first run (only tested with MySQL, but should work with Postgres and SQLite).  If you have problems see [Database Setup](db_setup.md).
 
 ## ConVars
 
 - `sm_xp_dump_file`: the file to dump current xp stats to when using `dumpxp` console command.  Defaults to "logs/pro_xp_dump.txt" which will create a log in the sourcemod logs folder.
 
-## Plugins
+## Plugin Interface
 
-Natives are provided to query player levels/xp, as well as two forwards: `OnGainXP` and `OnPlayerLevelUp`.  The `OnGainXP` forward is the most useful, allowing other plugins to get information on xp gained, jumpshots, noscopes, etc.
+See [Plugin Interface](interface.md) for information on how to interact with ProXP using other plugins.
 
-For instance, you could use it to display a message everytime someone gets a noscope kill:
+## Dependencies
 
-```
-public void OnGainXP(int client, int victim, int xp, int damage, bool killshot, bool headshot, bool noscope, bool jumpshot, bool grenade_hit) {
-   // if noscope and killshot are both true then do something here
-}
-```
-
-The `OnPlayerLevelUp` forward could, for example, display a notification when a user levels up:
-
-```
-public void OnPlayerLevelUp(int client, int oldLevel, int newLevel) {
-  // client went from oldLevel to newLevel, display notification here
-}
-```
-
-## Requirements
-
-- morecolors.inc
+- [morecolors.inc](https://forums.alliedmods.net/showthread.php?t=185016)
 
 ## Todo
 
-- Add season rankings
+- Add seasonal rankings

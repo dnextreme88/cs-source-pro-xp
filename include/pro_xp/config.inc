@@ -56,6 +56,12 @@ const int HIGHLIGHT_INTERVAL = 10; // prints a different message every N levels
 
 
 
+// The amount of extra stamina a player receives is calculated by: `level / STAMINA_AWARD_INTERVAL`
+// Set to 0.0 for no stamina award (only applied if ProSprint is running)
+#define STAMINA_AWARD_INTERVAL 5.0
+
+
+
  // xp multiplier for a kill compared to just causing damage
 #define KILL_MULT 1.1
 
