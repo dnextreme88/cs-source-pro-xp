@@ -111,8 +111,12 @@ See [Plugin Interface](interface.md) for information on how to interact with Pro
 
 ## Dependencies
 
-- [morecolors.inc](https://forums.alliedmods.net/showthread.php?t=185016)
+- [morecolors.inc](https://forums.alliedmods.net/showthread.php?t=185016) (included)
+- Optional - [ProSprint](https://github.com/vishusandy/ProSprint): gives stamina bonus depending on your level
+- Optional - [ProZoom](https://github.com/vishusandy/ProZoom): gives xp bonus for noscope hits
 
 ## Todo
 
+- Make a `config.cfg` file to store user configuration
+- Add translations
 - Add seasonal rankings
