@@ -16,7 +16,7 @@
 #define REQUIRE_PLUGIN
 
 
-public Plugin myinfo = { name = "Pro XP", author = "Vishus", description = "Stats and XP level system", version = "0.2.0", url = "" };
+public Plugin myinfo = { name = "Pro XP", author = "Vishus", description = "Stats and XP level system", version = "0.2.0", url = "https://github.com/vishusandy/ProXP" };
 
 public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max) {
     late_loaded = late;
