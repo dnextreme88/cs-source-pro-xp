@@ -65,7 +65,7 @@ The amount of XP gained is found by applying multipliers to the amount of damage
 
 - Killshot, default: 1.1 (110% of normal xp)
 - Headshot, default: 1.3
-- Bot multipliers (see the [bot_difficulty cvar](https://developer.valvesoftware.com/wiki/List_of_CS:S_Cvars#B):
+- Bot multipliers - see the [bot_difficulty cvar](https://developer.valvesoftware.com/wiki/List_of_CS:S_Cvars#B):
   - easy difficulty, default: 0.28 (28% of normal xp)
   - normal difficulty, default: 0.32
   - hard difficulty, default: 0.36
