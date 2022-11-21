@@ -4,9 +4,23 @@ A flexible stats tracker and xp-based level system for Counter-Strike Source.
 
 Only works for CSS at the moment but shouldn't be hard to make compatible with CSGO (if you are willing to help with this let me know).
 
+## Screenshots
+
+`!xphelp`, `!level`, and `!myrank` commands:
+![Output of the Pro XP commands: xphelp, level, and myrank](xp_level_myrank.png)
+
+`!rankings` command:
+![Pro XP rankings](xp_rankings.png)
+
+`!stats` command:
+![Pro XP stats command](xp_stats.png)
+
+Stamina bonus when [ProSprint](https://github.com/vishusandy/ProSprint) is enabled:
+![Pro XP stamina bonus with Pro Sprint](xp_stamina_bonus.png)
+
 ## Overview
 
-ProXP was designed to be a slimmer replacement for something like `rankme` while also adding xp.  In addition to XP it also tracks kills, deaths, damage dealt, knife kills, noscopes (if [ProZoom](https://github.com/vishusandy/ProZoom) is running), jumpshots, grenade kills, KD ratio, accuracy, and headshots.  Stats are tracked both per-session (from join to disconnect) and overall.
+ProXP was designed to be a slimmer replacement for something like `rankme` while also adding an xp and level system.  In addition to XP it also tracks kills, deaths, damage dealt, knife kills, noscopes (if [ProZoom](https://github.com/vishusandy/ProZoom) is running), jumpshots, grenade kills, KD ratio, accuracy, and headshots.  Stats are tracked both per-session (from join to disconnect) and overall.
 
 This plugin will use clan tags to display the user's level.  For players reaching the level cap (defaults to 100), special tags can be displayed.
 
@@ -120,3 +134,9 @@ See [Plugin Interface](interface.md) for information on how to interact with Pro
 - Make a `config.cfg` file to store user configuration
 - Add translations
 - Add seasonal rankings
+
+
+## Credits
+
+Shoutout to Fancy for all of the debugging help and testing
+
