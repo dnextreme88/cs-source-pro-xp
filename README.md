@@ -32,49 +32,11 @@ This plugin will use clan tags to display the user's level.  For players reachin
 
 ## Commands
 
-- `!level`: displays your current level progress
-
-- `!rankings` or `!top`: displays the overall rankings based on XP
-
-- `!myrank` or `!rank`: shows where you are ranked overall based on XP
-
-- `!xphelp`: show xp related commands
-
-- Stats
-  - `!stats` or `!statistics`: by default shows KD, accuracy, and kills for both current session and overall
-    - Syntax: `!stats [--all|--verbose|--extended|--kills]`
-  - `!stats help`: shows options for displaying statistics
-  - `!stats --all`: shows all statistics
-  - `!morestats`: same as `!stats --all`
-  - `!session`: displays stats for the current session (uses same options described in `!stats help`)
-  - `!overall`: displays overall stats (uses same options described in `!stats help`)
-
-- Console commands
-  - `dumpxp`: dumps the all xp stats to a file
-  - `listxp`: lists all xp stats in the console
+See [commands](commands.md)
 
 ## Installation
 
-Installation is fairly simple: 
-
-1. modify your `databases.cfg` file
-   
-   ```
-     "pro_xp"
-       {
-           "driver"      "default"
-           "host"        "<hostname>"
-           "database"    "<database>"
-           "user"        "<username>"
-           "pass"        "<password>"
-       }
-   ```
-
-2. then copy the .smx file to the plugins folder (e.g. `cstrike/addons/sourcemod/plugins`)
-
-3. load the plugin (e.g. `sm plugins load filename.smx`)
-
-The table should be created automatically on first run (only tested with MySQL, but should work with Postgres and SQLite).  If you have problems see [Database Setup](db_setup.md).
+See [installation](installation.md)
 
 ## Configuration
 
@@ -82,7 +44,7 @@ See [configuration](configuration.md)
 
 ## Plugin Interface
 
-See [Plugin Interface](interface.md) for information on how to interact with ProXP using other plugins.
+See [Plugin Interface](natives.md) for information on how to interact with ProXP using other plugins.
 
 ## Dependencies
 
