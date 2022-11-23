@@ -76,6 +76,10 @@ Installation is fairly simple:
 
 The table should be created automatically on first run (only tested with MySQL, but should work with Postgres and SQLite).  If you have problems see [Database Setup](db_setup.md).
 
+## Configuration
+
+See [configuration](configuration.md)
+
 ## Plugin Interface
 
 See [Plugin Interface](interface.md) for information on how to interact with ProXP using other plugins.
