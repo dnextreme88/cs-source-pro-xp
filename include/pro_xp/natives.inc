@@ -45,36 +45,35 @@ public any Native_GetXPMultiplier(Handle plugin, int numParams) {
     return xp_multiplier;
 }
 
-
 void Forward_OnPlayerLevelUp(int client, int oldLevel, int newLevel) {
-    if(oldLevel == LEVEL_CAP || newLevel <= oldLevel) {
+    if (oldLevel == LEVEL_CAP || newLevel <= oldLevel) {
         return;
     }
-    
+
     SetLevelTag(client);
     SetStamina(client);
-    
-    if(newLevel % HIGHLIGHT_INTERVAL == 0) {
+
+    if (newLevel % HIGHLIGHT_INTERVAL == 0) {
         #if SOUNDS_ENABLED == true
             EmitSoundToAll(sound_level_up_high);
         #endif
-        CPrintToChatAllEx(client, "Player {teamcolor}%N{default} reached level {red}%i", client, newLevel)
+        CPrintToChatAllEx(client, "{cyan}[ProXP] {teamcolor}%N{default} reached level {red}%i{default}!", client, newLevel)
     } else if(newLevel < LEVEL_CAP) {
         #if SOUNDS_ENABLED == true
             EmitSoundToAll(sound_level_up);
         #endif
-        CPrintToChatAllEx(client, "Player {teamcolor}%N{default} leveled up to level %i", client, newLevel)
+        CPrintToChatAllEx(client, "{cyan}[ProXP] {teamcolor}%N{default} is now level {green}%i{default}!", client, newLevel)
     } else {
         #if SOUNDS_ENABLED == true
             EmitSoundToAll(sound_level_up_high);
         #endif
-        CPrintToChatAllEx(client, "Player {teamcolor}%N{default} reached the maxiumum level of {red}%i", client, LEVEL_CAP);
+        CPrintToChatAllEx(client, "{cyan}[ProXP] {teamcolor}%N{default} reached the maximum level of {red}%i", client, LEVEL_CAP);
     }
-    
-    CPrintToChat(client, "Type !level to see your current progress or !xphelp for more commands");
+
+    CPrintToChat(client, "Type {green}!level{default} to see your current progress or {green}!xphelp{default} for more commands");
     levels[client] = newLevel;
     next_levels[client] = exp_points(newLevel+1);
-    
+
     Call_StartForward(level_up_forward);
     Call_PushCell(client);
     Call_PushCell(oldLevel);
@@ -82,13 +81,13 @@ void Forward_OnPlayerLevelUp(int client, int oldLevel, int newLevel) {
     Call_Finish();
 }
 
-void Forward_OnGainXP(int client, int victim, int xp, int damage, bool killshot, bool headshot, bool noscope, bool jumpshot, bool grenade_hit) {
-    if(!enabled) {
+void Forward_OnGainXP(int client, int victim, int xp, int damage, bool killshot, bool headshot, bool noscope, bool jumpshot, bool grenade_hit, bool first_blood) {
+    if (!enabled) {
         return;
     }
-    
+
     player_xp[client] += xp;
-    player_stats[client].hit(xp, damage, false, headshot, noscope, jumpshot, (grenade_hit & killshot));
+    player_stats[client].hit(xp, damage, false, headshot, noscope, jumpshot, (grenade_hit & killshot), first_blood);
     Call_StartForward(gain_xp_forward);
     Call_PushCell(client);
     Call_PushCell(victim);

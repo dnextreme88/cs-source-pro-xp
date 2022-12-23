@@ -4,7 +4,6 @@
 #define _pro_xp_vars_included
 
 
-
 float xp_multiplier = 1.0;
 float stamina_award;
 float bot_mult[] = {BOT_MULT_EASY, BOT_MULT_NORMAL, BOT_MULT_HARD, BOT_MULT_EXPERT}; // 0=easy, 1=normal, 2=hard, 3=expert
@@ -32,7 +31,6 @@ bool zoom_loaded;
 bool sprint_loaded;
 
 
-
 enum struct Stats {
     int xp;
     int deaths;
@@ -45,8 +43,9 @@ enum struct Stats {
     int headshots;
     int damage;
     int grenade_kills;
-    
-    void join(int xp, int deaths, int kills, int hits, int shots, int jumpshots, int noscopes, int knife_kills, int headshots, int damage, int grenade_kills) {
+    int first_bloods;
+
+    void join(int xp, int deaths, int kills, int hits, int shots, int jumpshots, int noscopes, int knife_kills, int headshots, int damage, int grenade_kills, int first_bloods) {
         this.xp = xp;
         this.deaths = deaths;
         this.kills = kills;
@@ -58,21 +57,24 @@ enum struct Stats {
         this.headshots = headshots;
         this.damage = damage;
         this.grenade_kills = grenade_kills;
+        this.first_bloods = first_bloods;
     }
-    void update(int xp, int damage, bool killshot, bool headshot, bool noscope, bool jumpshot, bool grenade_kill) {
+    void update(int xp, int damage, bool killshot, bool headshot, bool noscope, bool jumpshot, bool grenade_kill, bool first_bloods) {
         this.xp += xp;
         this.hits += 1;
         this.damage += damage;
-        if(killshot)
+        if (killshot)
             this.kills += 1;
-        if(noscope)
+        if (noscope)
             this.noscopes += 1;
-        if(jumpshot)
+        if (jumpshot)
             this.jumpshots += 1;
-        if(headshot)
+        if (headshot)
             this.headshots += 1;
-        if(grenade_kill)
+        if (grenade_kill)
             this.grenade_kills += 1;
+        if (first_bloods)
+            this.first_bloods += 1;
     }
     void reset() {
         this.xp = 0;
@@ -86,6 +88,7 @@ enum struct Stats {
         this.headshots = 0;
         this.damage = 0;
         this.grenade_kills = 0;
+        this.first_bloods = 0;
     }
     float kd() {
         int deaths = (this.deaths != 0)? this.deaths: 1;
@@ -107,13 +110,13 @@ enum struct Stats {
 enum struct Players {
     Stats start;
     Stats session;
-    void join(int xp, int deaths, int kills, int hits, int shots, int jumpshots, int noscopes, int knife_kills, int headshots, int damage, int grenade_kills) {
-        this.start.join(xp, deaths, kills, hits, shots, jumpshots, noscopes, knife_kills, headshots, damage, grenade_kills);
+    void join(int xp, int deaths, int kills, int hits, int shots, int jumpshots, int noscopes, int knife_kills, int headshots, int damage, int grenade_kills, int first_bloods) {
+        this.start.join(xp, deaths, kills, hits, shots, jumpshots, noscopes, knife_kills, headshots, damage, grenade_kills, first_bloods);
         this.session.reset();
     }
-    void hit(int xp, int damage, bool killshot, bool headshot, bool noscope, bool jumpshot, bool grenade_kill) {
+    void hit(int xp, int damage, bool killshot, bool headshot, bool noscope, bool jumpshot, bool grenade_kill, bool first_bloods) {
         // note: killshot should always be false since Forward_OnGainXP always passes false (kills/deaths are updated in EventPlayerDeath)
-        this.session.update(xp, damage, killshot, headshot, noscope, jumpshot, grenade_kill);
+        this.session.update(xp, damage, killshot, headshot, noscope, jumpshot, grenade_kill, first_bloods);
     }
     void shoot() {
         this.session.shots += 1;
@@ -127,11 +130,18 @@ enum struct Players {
     void kill() {
         this.session.kills += 1;
     }
+
+    void first_blood() {
+        this.session.first_bloods += 1;
+    }
+
     void reset() {
         this.start.reset();
         this.session.reset();
     }
-    void update(Database db, const char[] steamid) {
+
+
+    void update(Database db, const char[] steamid, const char[] player_name) {
         char query[384];
         int xp = this.start.xp + this.session.xp;
         int deaths = this.start.deaths + this.session.deaths;
@@ -144,52 +154,56 @@ enum struct Players {
         int headshots = this.start.headshots + this.session.headshots;
         int damage = this.start.damage + this.session.damage;
         int grenade_kills = this.start.grenade_kills + this.session.grenade_kills;
-        Format(query, sizeof(query), "UPDATE pro_xp SET xp=%i, deaths=%i, kills=%i, hits=%i, shots=%i, jumpshots=%i, noscopes=%i, knife_kills=%i, headshots=%i, damage=%i, grenade_kills=%i WHERE steamid = '%s' AND xp <= %i", xp, deaths, kills, hits, shots, jumpshots, noscopes, knife_kills, headshots, damage, grenade_kills, steamid, xp);
-        
+        int first_bloods = this.start.first_bloods + this.session.first_bloods;
+
+        Format(query, sizeof(query), "UPDATE pro_xp SET xp=%i, deaths=%i, kills=%i, hits=%i, shots=%i, jumpshots=%i, noscopes=%i, knife_kills=%i, headshots=%i, damage=%i, grenade_kills=%i, first_bloods=%i WHERE steamid = '%s' AND xp <= %i AND name = '%s'", xp, deaths, kills, hits, shots, jumpshots, noscopes, knife_kills, headshots, damage, grenade_kills, first_bloods, steamid, xp, player_name);
+
         #if DEBUGGING
             LogToFile(logfile, "Updating XP for steamid=%s to %i", steamid, xp);
         #endif
-        
+
         db.Query(UpdateStatsCallback, query);
-        // LogToFile(XP_LOG_FILE, "Updating stats: %s", query);
     }
-    
-    void stats(int client, bool kill_types=false, bool verbose=false) {
+
+    void stats(int client, bool kill_types = false, bool verbose = false) {
         this.session_stats(client, kill_types, verbose);
         this.overall_stats(client, kill_types, verbose);
     }
-    
+
     void session_stats(int client, bool kill_types=false, bool verbose=false) {
         CPrintToChat(client, "{white}Session Stats:{default}");
-        if(verbose) {
+        if (verbose) {
             CPrintToChat(client, "    Kills=%i Deaths=%i Damage=%i XP=%i", this.session.kills, this.session.deaths, this.session.damage, this.session.xp);
         }
-        if(kill_types) {
+
+        if (kill_types) {
             CPrintToChat(client, "    Knifes=%i Noscopes=%i Jumpshots=%i Grenades=%i", this.session.knife_kills, this.session.noscopes, this.session.jumpshots, this.session.grenade_kills);
         }
+
         CPrintToChat(client, "    KD=%.1f Accuracy=%.2f Headshots=%i", this.session.kd(), this.session.accuracy(), this.session.headshots);
     }
-    
-    void overall_stats(int client, bool kill_types=false, bool verbose=false) {
+
+    void overall_stats(int client, bool kill_types = false, bool verbose = false) {
         CPrintToChat(client, "{white}Overall Stats:{default}");
-        if(verbose) {
+        if (verbose) {
             CPrintToChat(client, "    Kills=%i Deaths=%i Damage=%i XP=%i", this.session.kills + this.start.kills, this.session.deaths + this.start.deaths, this.session.damage + this.start.damage, this.session.xp + this.start.xp);
         }
-        if(kill_types) {
+
+        if (kill_types) {
             CPrintToChat(client, "    Knifes=%i Noscopes=%i Jumpshots=%i Grenades=%i", this.session.knife_kills + this.start.knife_kills, this.session.noscopes + this.start.noscopes, this.session.jumpshots + this.start.jumpshots, this.session.grenade_kills + this.start.grenade_kills);
         }
+
         CPrintToChat(client, "    KD=%.1f Accuracy=%.2f Headshots=%i", this.start.overall_kd(this.session.kills, this.session.deaths), this.start.overall_accuracy(this.session.hits, this.session.shots), this.session.headshots + this.start.headshots);
     }
-    
-    
 }
 
 public void UpdateStatsCallback(Database db, DBResultSet result, const char[] error, int client) {
-    if(strlen(error) > 0) {
+    if (strlen(error) > 0) {
         LogToFile(XP_LOG_FILE, "Error in update stats: %s", error);
         return;
     }
-    if(result.AffectedRows == 0) {
+
+    if (result.AffectedRows == 0) {
         char query[128];
         Format(query, sizeof(query), "SELECT xp FROM pro_xp WHERE steamid = '%s'", steam_ids[client]);
         db.Query(UpdateStatsFailed, query, client);
@@ -197,16 +211,14 @@ public void UpdateStatsCallback(Database db, DBResultSet result, const char[] er
 }
 
 public void UpdateStatsFailed(Database db, DBResultSet result, const char[] error, int client) {
-    if(strlen(error) > 0) {
+    if (strlen(error) > 0) {
         LogToFile(XP_LOG_FILE, "Error in update stats xp check: %s", error);
-    } else if(result != null && result.FetchRow()) {
+    } else if (result != null && result.FetchRow()) {
         int exp = result.FetchInt(0);
-        if(player_xp[client] > exp) {
+        if (player_xp[client] > exp) {
             LogToFile(logfile, "ERROR: user xp failed but database xp is smaller (user gained xp since query?) - client=%N from %ixp to %ixp", client, player_xp[client], exp);
-        // } else if (player_xp[client] == exp) {
-        //     LogAction(client, -1, "Update for client %i - old xp is equal to new xp", client);
         } else {
-            // There was a discrepancy between the xp in memory and in the database; the database xp was lager which should would have otherwise subtracted from the player's xp
+            // There was a discrepancy between the xp in memory and in the database; the database xp was larger which should would have otherwise subtracted from the player's xp
             LogToFile(logfile, "Stat update failed - attempted to update client %i (steamid=%s) xp from a lesser amount of %i to %i", client, steam_ids[client], player_xp[client], exp);
         }
     }
