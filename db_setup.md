@@ -43,6 +43,7 @@ CREATE TABLE `pro_xp` (
   `headshots` int(11) NOT NULL DEFAULT '0',
   `damage` bigint(11) NOT NULL DEFAULT '0',
   `grenade_kills` int(11) NOT NULL DEFAULT '0',
+  `first_bloods` int(11) NULL DEFAULT '0',
   `games_count` int(11) NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
