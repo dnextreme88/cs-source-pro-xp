@@ -15,15 +15,15 @@
     }
 ```
 
-2. Run your database server. You can use XAMPP then open up the ports for Apache and MySQL.
+2. The table will be created automatically on first run. If you have issues see [Manual Setup](db_setup.md#manual-setup).
 
-3. Create your database as what you specified in your `databases.cfg`. Then run your dedicated server. The table will be created automatically on first run. If you have issues see [Manual Setup](db_setup.md#manual-setup).
-   
-   > Note: automatically creating the tables has only been tested with MySQL, but should work for Postgres and SQLite as well.
+   > Note: automatically creating the tables has only been tested with MySQL, but should work for Postgres and SQLite as well.  Only the table will be created, not the database.
 
 ## Manual Setup
 
-If you have problems, you can create the table manually. Assuming you use XAMPP (MySQL), create your database from phpMyAdmin then go to the SQL tab and run the following queries:
+If you have problems, you can create the table manually. 
+
+You can use the following MySQL queries (or make equivalent queries in whatever database you're using):
 
 ```
 CREATE TABLE `pro_xp` (
