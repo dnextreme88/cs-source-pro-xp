@@ -12,7 +12,7 @@ See [screenshots](screenshots.md) for more
 
 ## Overview
 
-ProXP was designed to be a slimmer replacement for something like `rankme` while also adding an xp and level system.  In addition to XP it also tracks kills, deaths, damage dealt, knife kills, noscopes (if [ProZoom](https://github.com/vishusandy/ProZoom) is running), jumpshots, grenade kills, KD ratio, accuracy, and headshots.  Stats are tracked both per-session (from join to disconnect) and overall.
+ProXP was designed to be a slimmer replacement for something like `rankme` while also adding an xp and level system.  In addition to XP it also tracks kills, deaths, damage dealt, knife kills, noscopes (if [ProZoom](https://github.com/vishusandy/ProZoom) is running), jumpshots, grenade kills, KD ratio, accuracy, and headshots, and first bloods.  Stats are tracked both per-session (from join to disconnect) and overall.
 
 This plugin will use clan tags to display the user's level.  For players reaching the level cap (defaults to 100), special tags can be displayed.
 
@@ -61,5 +61,5 @@ See [Plugin Interface](natives.md) for information on how to interact with ProXP
 
 ## Credits
 
-Shoutout to Fancy for all of the debugging help and testing
-
+- [dnextreme88](https://github.com/dnextreme88) - added support for bots and first blood tracking
+- Fancy - debugging help and testing
