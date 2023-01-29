@@ -39,6 +39,7 @@ public int Native_SetXPMultiplier(Handle plugin, int numParams) {
     #if DEBUGGING
         LogToFile(logfile, "Set xp multiplier to %f", multiplier);
     #endif
+    return 0;
 }
 
 public any Native_GetXPMultiplier(Handle plugin, int numParams) {

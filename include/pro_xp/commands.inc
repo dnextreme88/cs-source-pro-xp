@@ -18,7 +18,9 @@ public Action CommandLevel(client, args) {
 }
 
 // Do nothing, just close the menu
-public int HandleLevelRanking(Menu menu, MenuAction action, int param1, int param2) {}
+public int HandleLevelRanking(Menu menu, MenuAction action, int param1, int param2) {
+    return 0;
+}
 
 public Action ShowLevelRanking(int client, int args) {
     if (!enabled || !IsClientInGame(client) || IsFakeClient(client)) {
@@ -223,6 +225,7 @@ void stat_help(int client, const char[] cmd) {
 
 public Action ShowLevelHelp(int client, int args) {
     PrintToChat(client, "Commands: !level, !statistics, !session, !overall, !rankings, !myrank, !xphelp");
+    return Plugin_Continue;
 }
 
 public Action DumpXP(int args) {
@@ -233,10 +236,12 @@ public Action DumpXP(int args) {
         show_all = (StrEqual(buffer, "0") || StrEqual(buffer, "false", false) || StrEqual(buffer, "list", false))? false: true;
     }
     DB.Query(DumpXPCallback, "SELECT steamid, name, xp FROM pro_xp", show_all);
+    return Plugin_Continue;
 }
 
 public Action ListXP(int args) {
     DB.Query(DumpXPCallback, "SELECT steamid, name, xp FROM pro_xp", false);
+    return Plugin_Continue;
 }
 
 public void DumpXPCallback(Database db, DBResultSet result, const char[] error, bool show_all) {
