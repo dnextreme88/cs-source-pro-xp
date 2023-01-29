@@ -29,6 +29,9 @@ int levels[MAXPLAYERS+1];
 int next_levels[MAXPLAYERS+1];
 bool zoom_loaded;
 bool sprint_loaded;
+int totalKills = 0;
+char firstBloodAttacker[64];
+char firstBloodVictim[64];
 
 
 enum struct Stats {

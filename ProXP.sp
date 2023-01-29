@@ -15,9 +15,6 @@
 #include <ProSprint.inc>
 #define REQUIRE_PLUGIN
 
-new totalKills = 0;
-new String:firstBloodAttacker[64];
-new String:firstBloodVictim[64];
 
 public Plugin myinfo = {
     name = "Pro XP",
@@ -133,12 +130,14 @@ public Action lilac_cheater_detected(int client, int cheat) {
     #if XP_PENALTY_DETECTION
         DockXP(client, XP_PENALTY_DETECTION, true);
     #endif
+    return Plugin_Continue;
 }
 
 public Action lilac_cheat_banned(int client, int cheat) {
     #if XP_PENALTY_BAN
         DockXP(client, XP_PENALTY_BAN, true);
     #endif
+    return Plugin_Continue;
 }
 
 void DockXP(int client, int xp_penalty, bool ban) {
@@ -269,11 +268,8 @@ public Action EventPlayerDisconnect(Handle event, const char[] name, bool dontBr
 }
 
 public Action EventPlayerDeath(Handle event, const char[] name, bool dontBroadcast) {
-    new victimId = GetEventInt(event, "userid");
-    new attackerId = GetEventInt(event, "attacker");
-
-    int victim = GetClientOfUserId(victimId);
-    int attacker = GetClientOfUserId(attackerId);
+    int victim = GetClientOfUserId(GetEventInt(event, "userid"));
+    int attacker = GetClientOfUserId(GetEventInt(event, "attacker"));
 
     if (attacker > 0) {
         player_stats[attacker].kill();
@@ -286,17 +282,17 @@ public Action EventPlayerDeath(Handle event, const char[] name, bool dontBroadca
     player_stats[victim].death();
     UpdateDatabaseXP(victim);
 
-    if (victimId < 1 || victimId > GetMaxHumanPlayers()) {
+    if (victim == 0) {
         return Plugin_Continue;
     } else {
-        new String:attackerName[64];
+        char attackerName[64];
         GetClientName(attacker, attackerName, sizeof(attackerName));
 
-        new String:victimName[64];
+        char victimName[64];
         GetClientName(victim, victimName, sizeof(victimName));
 
         if (GetClientTeam(attacker) != GetClientTeam(victim)) { // Attacker and victim are not on the same team
-            totalKills++;
+            totalKills += 1;
 
             if (totalKills == 1) { // First kill on opposing team
                 strcopy(firstBloodAttacker, sizeof(firstBloodAttacker), attackerName);
@@ -310,6 +306,7 @@ public Action EventPlayerDeath(Handle event, const char[] name, bool dontBroadca
             }
         }
     }
+    return Plugin_Continue;
 }
 
 public Action EventPlayerShoot(Handle event, const char[] name, bool dontBroadcast) {
@@ -328,13 +325,14 @@ public Action EventPlayerSpawn(Handle event, const char[] name, bool dontBroadca
     int client = GetClientOfUserId(GetEventInt(event, "userid"));
 
     if (!enabled) {
-        return;
+        return Plugin_Continue;
     }
 
     if (!CheckLevelUp(client)) {
         SetStamina(client, false);
         SetLevelTag(client);
     }
+    return Plugin_Continue;
 }
 
 
@@ -352,20 +350,21 @@ public void OnMapStart() {
 
 public Action EventPlayerHurt(Handle event, const char[] name, bool dontBroadcast) {
     if (!enabled) {
-        return;
+        return Plugin_Continue;
     }
 
     int attacker = GetClientOfUserId(GetEventInt(event, "attacker"));
     int victim = GetClientOfUserId(GetEventInt(event, "userid"));
 
     if (victim == 0 || attacker == 0 || attacker == victim || levels[attacker] == 0) {
-        return;
+        return Plugin_Continue;
     }
 
     int damage = 0;
     bool killshot, headshot, noscope, jumpshot, grenade, isFirstBlood = false;
     int xp = CalculateXP(event, damage, killshot, headshot, noscope, jumpshot, grenade, isFirstBlood);
     Forward_OnGainXP(attacker, victim, xp, damage, killshot, headshot, noscope, jumpshot, grenade, isFirstBlood);
+    return Plugin_Continue;
 }
 
 
@@ -650,6 +649,7 @@ public void SetLevelTag(int client) {
 
 public Action DelayedSetLevelTag(Handle timer, int client) {
     SetLevelTag(client);
+    return Plugin_Continue;
 }
 
 public void BotDifficultyChanged(ConVar convar, const char[] oldValue, const char[] newValue) {
@@ -714,6 +714,7 @@ void InstantSetStamina(int client, bool output=true) {
 
 public Action DelayedSetStamina(Handle timer, int client) {
     SetStamina(client);
+    return Plugin_Continue;
 }
 
 void UpdateAllXP() {
